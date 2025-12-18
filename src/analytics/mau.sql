@@ -1,32 +1,26 @@
-WITH tb_daily AS (
+WITH tb_daily as (
 
-    SELECT DISTINCT 
-        date(substr(DtCriacao,0,11)) AS DtDia,
-        IdCliente
-
-    FROM transacoes
-    order by DtDia
-
+SELECT DISTINCT
+    date(substr(DtCriacao,0,11)) AS DtDia,
+    IdCliente
+FROM transacoes
+order by DtDia
 ),
 
-tb_distinct_day AS (
-
-    SELECT
-            DISTINCT DtDia AS dtRef
-    FROM tb_daily
-
+tb_distinct_day as (
+select DISTINCT 
+        DtDia as dtRef
+from tb_daily 
 )
 
-SELECT t1.dtRef,
-       count( distinct IdCliente) AS MAU,
-       count(distinct t2.dtDia) AS qtdeDias
+select  t1.dtRef,
+        count(DISTINCT IdCliente) as MAU
+        count(DISTINCT DtDia) as qtdeDias
+from tb_distinct_day as t1
+left join tb_daily as t2 
+on t2.DtDia <= t1.dtRef 
+and julianday(t1.dtRef) - julianday(t2.DtDia) < 28
 
-FROM tb_distinct_day AS t1
+group by t1.dtRef
 
-LEFT JOIN tb_daily AS t2
-ON t2.DtDia <= t1.dtRef
-AND julianday(t1.dtRef) - julianday(t2.DtDia) < 28
-
-GROUP BY t1.dtRef
-
-ORDER BY t1.dtRef ASC
+order by t1.dtRef asc
