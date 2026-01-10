@@ -14,7 +14,7 @@ from tb_daily
 )
 
 select  t1.dtRef,
-        count(DISTINCT IdCliente) as MAU
+        count(DISTINCT IdCliente) as MAU,
         count(DISTINCT DtDia) as qtdeDias
 from tb_distinct_day as t1
 left join tb_daily as t2 
